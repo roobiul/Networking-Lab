@@ -1,0 +1,114 @@
+RIP (Routing Information Protocol) Configuration
+🧩 Example Network
+
+3 routers connected like this:
+
+R1 --- R2 --- R3
+
+
+Each router connected to a different LAN:
+
+R1 LAN: 192.168.1.0/24
+
+R2 LAN: 192.168.2.0/24
+
+R3 LAN: 192.168.3.0/24
+
+🖥️ Step-by-Step (RIP)
+
+For R1:
+
+Router> enable
+Router# configure terminal
+Router(config)# router rip
+Router(config-router)# version 2
+Router(config-router)# network 192.168.1.0
+Router(config-router)# network 192.168.2.0
+Router(config-router)# no auto-summary
+Router(config-router)# exit
+Router(config)# end
+Router# write
+
+
+For R2:
+
+Router> enable
+Router# configure terminal
+Router(config)# router rip
+Router(config-router)# version 2
+Router(config-router)# network 192.168.2.0
+Router(config-router)# network 192.168.3.0
+Router(config-router)# no auto-summary
+Router(config-router)# exit
+Router(config)# end
+Router# write
+
+
+For R3:
+
+Router> enable
+Router# configure terminal
+Router(config)# router rip
+Router(config-router)# version 2
+Router(config-router)# network 192.168.3.0
+Router(config-router)# no auto-summary
+Router(config-router)# exit
+Router(config)# end
+Router# write
+
+
+✅ Verification Command:
+
+Router# show ip route
+
+
+You should see routes learned from other routers marked with R.
+
+🌐 2. OSPF (Open Shortest Path First) Configuration
+🧩 Example Network
+
+Same setup as before.
+
+R1 LAN: 10.0.0.0/24
+
+R2 LAN: 20.0.0.0/24
+
+R3 LAN: 30.0.0.0/24
+
+🖥️ Step-by-Step (OSPF)
+
+For R1:
+
+Router> enable
+Router# configure terminal
+Router(config)# router ospf 1
+Router(config-router)# network 10.0.0.0 0.0.0.255 area 0
+Router(config-router)# network 192.168.12.0 0.0.0.255 area 0
+Router(config-router)# exit
+Router(config)# end
+Router# write
+
+
+For R2:
+
+Router> enable
+Router# configure terminal
+Router(config)# router ospf 1
+Router(config-router)# network 20.0.0.0 0.0.0.255 area 0
+Router(config-router)# network 192.168.12.0 0.0.0.255 area 0
+Router(config-router)# network 192.168.23.0 0.0.0.255 area 0
+Router(config-router)# exit
+Router(config)# end
+Router# write
+
+
+For R3:
+
+Router> enable
+Router# configure terminal
+Router(config)# router ospf 1
+Router(config-router)# network 30.0.0.0 0.0.0.255 area 0
+Router(config-router)# network 192.168.23.0 0.0.0.255 area 0
+Router(config-router)# exit
+Router(config)# end
+Router# write

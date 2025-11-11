@@ -1,0 +1,83 @@
+#include <iostream>
+using namespace std;
+
+#define INF 999
+
+int main() {
+    int n, source;
+    cout << "Enter number of routers: ";
+    cin >> n;
+
+    int cost[n][n];
+    cout << "Enter cost matrix (use 999 for no direct link):\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> cost[i][j];
+        }
+    }
+
+    cout << "Enter source router (1 - " << n << "): ";
+    cin >> source;
+    source--;  // converting to 0-index
+
+    int dist[n], visited[n], nextHop[n];
+
+    // Initialization
+    for (int i = 0; i < n; i++) {
+        dist[i] = cost[source][i];
+        visited[i] = 0;
+        nextHop[i] = source;
+    }
+
+    visited[source] = 1;
+    dist[source] = 0;
+
+    // Dijkstra's Algorithm (Link State)
+    for (int count = 1; count < n - 1; count++) {
+        int minDist = INF, u = -1;
+
+        // Find the unvisited node with minimum distance
+        for (int i = 0; i < n; i++) {
+            if (!visited[i] && dist[i] < minDist) {
+                minDist = dist[i];
+                u = i;
+            }
+        }
+
+        visited[u] = 1;
+
+        // Update distances for neighbors
+        for (int v = 0; v < n; v++) {
+            if (!visited[v] && cost[u][v] != INF && dist[u] + cost[u][v] < dist[v]) {
+                dist[v] = dist[u] + cost[u][v];
+                nextHop[v] = u;
+            }
+        }
+    }
+
+    // Display Result
+    cout << "\nShortest paths from Router " << source + 1 << ":\n";
+    for (int i = 0; i < n; i++) {
+        if (i != source) {
+            cout << "To Router " << i + 1 << " -> Cost: " << dist[i];
+            cout << ", Next Hop: " << nextHop[i] + 1 << endl;
+        }
+    }
+
+    return 0;
+}
+
+
+
+//Enter number of routers: 4
+Enter cost matrix (use 999 for no direct link):
+0 1 3 999
+1 0 1 7
+3 1 0 2
+999 7 2 0
+Enter source router (1 - 4): 1
+
+//Shortest paths from Router 1:
+To Router 2 -> Cost: 1, Next Hop: 2
+To Router 3 -> Cost: 2, Next Hop: 2
+To Router 4 -> Cost: 4, Next Hop: 3

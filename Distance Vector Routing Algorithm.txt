@@ -1,0 +1,75 @@
+#include <iostream>
+using namespace std;
+
+#define INF 999
+
+int main() {
+    int n;
+    cout << "Enter number of routers: ";
+    cin >> n;
+
+    int cost[n][n];
+    cout << "Enter cost matrix (use 999 for no direct link):\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> cost[i][j];
+        }
+    }
+
+    int dist[n][n];   // distance table
+    int nextHop[n][n]; // next hop table
+
+    // Initialize distance and nextHop
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            dist[i][j] = cost[i][j];
+            if (cost[i][j] != INF && i != j)
+                nextHop[i][j] = j;
+            else
+                nextHop[i][j] = -1;
+        }
+    }
+
+    // Distance Vector Algorithm
+    bool updated;
+    do {
+        updated = false;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < n; k++) {
+                    if (dist[i][j] > cost[i][k] + dist[k][j]) {
+                        dist[i][j] = cost[i][k] + dist[k][j];
+                        nextHop[i][j] = k;
+                        updated = true;
+                    }
+                }
+            }
+        }
+    } while (updated);
+
+    // Display final routing table
+    cout << "\nFinal Distance Table:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "\nRouter " << i + 1 << ":\n";
+        for (int j = 0; j < n; j++) {
+            cout << "To " << j + 1 << " : Cost = " << dist[i][j];
+            if (nextHop[i][j] != -1)
+                cout << ", Next Hop = " << nextHop[i][j] + 1;
+            cout << endl;
+        }
+    }
+    return 0;
+}
+
+
+//Enter number of routers: 3
+Enter cost matrix (use 999 for no direct link):
+0 2 7
+2 0 1
+7 1 0
+///Final Distance Table:
+
+Router 1:
+To 1 : Cost = 0, Next Hop = -
+To 2 : Cost = 2, Next Hop = 2
+To 3 : Cost = 3, Next Hop = 2
